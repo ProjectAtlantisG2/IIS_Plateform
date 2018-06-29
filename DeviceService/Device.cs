@@ -21,7 +21,7 @@ namespace DeviceService
         
         public bool IsNull()
         {
-            if (id == null || deviceType == null) return true;
+            if (id == null) return true;
             return false;
         }
 
