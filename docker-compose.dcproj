@@ -3,10 +3,10 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Windows</DockerTargetOS>
-    <ProjectGuid>092bc5af-1fab-4c21-8e75-a82aa98a5816</ProjectGuid>
+    <ProjectGuid>6de60207-aea0-444d-9eee-45a87be2c697</ProjectGuid>
     <DockerLaunchAction>LaunchWCFTestClient</DockerLaunchAction>
     <DockerServiceUrl>http://{ServiceIPAddress}/Service.svc</DockerServiceUrl>
-    <DockerServiceName>deviceservice</DockerServiceName>
+    <DockerServiceName>calculationservice</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
