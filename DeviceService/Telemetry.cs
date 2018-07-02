@@ -19,12 +19,6 @@ namespace DeviceService
             if (deviceType != null) this.deviceType = (DeviceType)deviceType;
             this.metricValue = metricValue;
         }
-
-        public bool IsNull()
-        {
-            if (metricDate == null || deviceType == null || metricValue == null) return true;
-            return false;
-        }
         
     }
    
