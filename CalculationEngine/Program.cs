@@ -32,15 +32,15 @@ namespace CalculationEngine
             MongoConnection mongoConnection = new MongoConnection(mongoConnectionString, mongoDatabaseName);
             foreach (DeviceType type in Enum.GetValues(typeof(CalculatedDeviceType)))
             {
-                RawDataResponse response = comm.GetDataForCalculation(new RawDataRequest(delay, type, DateTime.Now.Hour - 1, DateTime.Now.Hour));
+                RawDataResponse response = comm.GetDataForCalculation(new RawDataRequest(delay, type, DateTime.Now.Hour - 1, DateTime.Now.Hour)).Result;
 
                 var max = response.RawData.Max();
                 var min = response.RawData.Min();
                 var moy = response.RawData.Sum() / response.RawData.Count;
 
-                mongoConnection.InsertData(response.ToCollectionName(CalculType.Max), max, response.From);
-                mongoConnection.InsertData(response.ToCollectionName(CalculType.Min), min, response.From);
-                mongoConnection.InsertData(response.ToCollectionName(CalculType.Moy), moy, response.From);
+                //mongoConnection.InsertData(response.ToCollectionName(CalculType.Max), max, response.From);
+                //mongoConnection.InsertData(response.ToCollectionName(CalculType.Min), min, response.From);
+                //mongoConnection.InsertData(response.ToCollectionName(CalculType.Moy), moy, response.From);
             };
         } 
     }

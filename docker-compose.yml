@@ -1,18 +1,11 @@
 version: '3.4'
 
 services:
-  host:
-    image: ${DOCKER_REGISTRY}host
+  calculationengine:
+    image: ${DOCKER_REGISTRY}calculationengine
     build:
-      context: .\Host
+      context: .\CalculationEngine
       dockerfile: Dockerfile
-
-  deviceservice:
-    image: ${DOCKER_REGISTRY}deviceservice
-    build:
-      context: .\DeviceService
-      dockerfile: Dockerfile
-
 
   calculationservice:
     image: ${DOCKER_REGISTRY}calculationservice
@@ -21,9 +14,16 @@ services:
       dockerfile: Dockerfile
 
 
-  calculationengine:
-    image: ${DOCKER_REGISTRY}calculationengine
+  deviceservice:
+    image: ${DOCKER_REGISTRY}deviceservice
     build:
-      context: .\CalculationEngine
+      context: .\DeviceService
+      dockerfile: Dockerfile
+
+
+  host:
+    image: ${DOCKER_REGISTRY}host
+    build:
+      context: .\Host
       dockerfile: Dockerfile
 

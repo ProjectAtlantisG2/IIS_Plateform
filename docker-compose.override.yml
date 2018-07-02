@@ -6,10 +6,10 @@ networks:
       name: nat
 
 services:
-  deviceservice:
+  calculationservice:
     ports:
       - "80"
 
-  calculationservice:
+  deviceservice:
     ports:
       - "80"
