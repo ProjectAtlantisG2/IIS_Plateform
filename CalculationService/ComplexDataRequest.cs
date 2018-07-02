@@ -21,41 +21,11 @@ namespace CalculationService
 
         public string ToCollectionName()
         {
-            var DataType = DeviceTypeToDataType(this.DeviceType);
+            var DataType = base.DeviceTypeToDataType(this.DeviceType);
             if (DataType != null)
                 return DataType + this.CalculType + this.Delay;
             return null;
         }
 
-        private string DeviceTypeToDataType(DeviceType deviceType)
-        {
-            switch (deviceType)
-            {
-                case DeviceType.atmosphericPressureSensor:
-                    {
-                        return "Pres";
-                    }
-                case DeviceType.brightnessSensor:
-                    {
-                        return "Brig";
-                    }
-                case DeviceType.co2Sensor:
-                    {
-                        return "Co20";
-                    }
-                case DeviceType.humiditySensor:
-                    {
-                        return "Humi";
-                    }
-                case DeviceType.temperatureSensor:
-                    {
-                        return "Temp";
-                    }
-                default:
-                    {
-                        return null;
-                    }
-            }
-        }
     }
 }

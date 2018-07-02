@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Runtime.Serialization;
+using DAO;
 
-namespace DAO
+namespace CalculationService
 {
     [DataContract]
     public class RawDataRequest : BaseData
     {
         [DataMember]
-        private int From { get; set; }
+        public int From { get; set; }
         [DataMember]
         private int To { get; set; }
 
         public RawDataRequest(Delay delay, DeviceType deviceType, int from, int to)
-            :base(delay, deviceType)
+            : base(delay, deviceType)
         {
             this.From = from;
             this.To = to;

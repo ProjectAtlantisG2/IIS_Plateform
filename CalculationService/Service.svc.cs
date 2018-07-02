@@ -29,9 +29,12 @@ namespace CalculationService
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public async void GetDataForCalculation(RawDataRequest rawDataRequest)
+        public async RawDataResponse GetDataForCalculation(RawDataRequest rawDataRequest)
         {
-            await client.PostAsync(javaPlatformBaseUri + "/calculation", new StringContent(JsonConvert.SerializeObject(rawDataRequest), Encoding.UTF8, "application/json"));
+            HttpResponseMessage response = await client.PostAsync(javaPlatformBaseUri + "/calculation", new StringContent(JsonConvert.SerializeObject(rawDataRequest), Encoding.UTF8, "application/json"));
+
+            //// MODIF CA 
+            return null;
         }
     }
 }

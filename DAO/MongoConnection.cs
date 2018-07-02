@@ -23,9 +23,10 @@ namespace DAO
             catch { return; }
         }
 
-        public GetData()
+        public void InsertData(string collectionName, float data)
         {
-            Collection.
+            var collection = this.Database.GetCollection<ComplexData>(collectionName);
+            //collection.InsertOne(data);
         }
     }
 }

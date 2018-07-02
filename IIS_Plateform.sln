@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationService", "Calcu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationEngine", "CalculationEngine\CalculationEngine.csproj", "{31E53818-8242-48D2-BAE4-ED7B57A861B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAO", "DAO\DAO.csproj", "{4C41C76E-4F47-4107-BB4F-E418F2145B00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAO", "DAO\DAO.csproj", "{4C41C76E-4F47-4107-BB4F-E418F2145B00}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{092BC5AF-1FAB-4C21-8E75-A82AA98A5816}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{4C41C76E-4F47-4107-BB4F-E418F2145B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C41C76E-4F47-4107-BB4F-E418F2145B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C41C76E-4F47-4107-BB4F-E418F2145B00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{092BC5AF-1FAB-4C21-8E75-A82AA98A5816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{092BC5AF-1FAB-4C21-8E75-A82AA98A5816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{092BC5AF-1FAB-4C21-8E75-A82AA98A5816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{092BC5AF-1FAB-4C21-8E75-A82AA98A5816}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
