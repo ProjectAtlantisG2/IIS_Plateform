@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.ServiceModel.Web;
+﻿using System.Net.Http;
 using System.Text;
+using System.Net;
+using DAO;
+using System.Configuration;
+using Newtonsoft.Json;
 
 namespace CalculationService
 {
@@ -12,22 +11,30 @@ namespace CalculationService
     // REMARQUE : pour lancer le client test WCF afin de tester ce service, sélectionnez Service1.svc ou Service1.svc.cs dans l'Explorateur de solutions et démarrez le débogage.
     public class Service : IService
     {
-        public string GetData(int value)
+        private static readonly string mongoConnectionString = ConfigurationManager.AppSettings["MongoConnectionString"];
+        private static readonly string mongoDatabaseName = ConfigurationManager.AppSettings["MongoDatabaseName"];
+        private static readonly string mongoCollectionName = ConfigurationManager.AppSettings["MongoCollectionName"];
+        private static readonly string javaPlatformBaseUri = ConfigurationManager.AppSettings["JavaPlatformBaseUri"];
+        private static readonly HttpClient client = new HttpClient();
+
+        public HttpResponseMessage PostGlobalComplexData(ComplexDataRequest complexDataRequest)
         {
-            return string.Format("You entered: {0}", value);
+            if (complexDataRequest == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
+            var collection = complexDataRequest.ToCollectionName();
+            if (collection == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
+            MongoConnection mongoConnection = new MongoConnection(mongoConnectionString, mongoDatabaseName, complexDataRequest.ToCollectionName());
+
+            //Get DATA
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public CompositeType GetDataUsingDataContract(CompositeType composite)
+        public async RawDataResponse GetDataForCalculation(RawDataRequest rawDataRequest)
         {
-            if (composite == null)
-            {
-                throw new ArgumentNullException("composite");
-            }
-            if (composite.BoolValue)
-            {
-                composite.StringValue += "Suffix";
-            }
-            return composite;
+            HttpResponseMessage response = await client.PostAsync(javaPlatformBaseUri + "/calculation", new StringContent(JsonConvert.SerializeObject(rawDataRequest), Encoding.UTF8, "application/json"));
+
+            //// MODIF CA 
+            return null;
         }
     }
 }

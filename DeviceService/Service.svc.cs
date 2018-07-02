@@ -21,14 +21,14 @@ namespace DeviceService
         
         public HttpResponseMessage PostDevice(Device device)
         {
-            if (device.IsNull()) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
+            if (device == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
             client.PostAsync(javaPlatformBaseUri + "/device", new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(device), Encoding.UTF8, "application/json"));
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         public HttpResponseMessage PostTelemetry(Telemetry telemetry, string deviceId)
         {
-            if (telemetry.IsNull() || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
+            if (telemetry == null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
 
             //// NEED TO SEND DATA TO JMS ////
             

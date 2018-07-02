@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Text;
+using DAO;
 
 namespace CalculationService
 {
@@ -13,9 +10,12 @@ namespace CalculationService
     public interface IService
     {
 
-        [OperationContract]
-        public 
 
+        [OperationContract]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, UriTemplate = "")]
+        HttpResponseMessage PostGlobalComplexData(ComplexDataRequest complexDataRequest);
+
+        RawDataResponse GetDataForCalculation(RawDataRequest rawDataRequest);
         // TODO: ajoutez vos opérations de service ici
     }
 }

@@ -18,12 +18,6 @@ namespace DeviceService
             this.id = id;
             this.name = name;
         }
-        
-        public bool IsNull()
-        {
-            if (id == null) return true;
-            return false;
-        }
 
     }
 }
