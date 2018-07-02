@@ -1,0 +1,15 @@
+version: '3.4'
+
+networks:
+  default:
+    external:
+      name: nat
+
+services:
+  deviceservice:
+    ports:
+      - "80"
+
+  calculationservice:
+    ports:
+      - "80"
