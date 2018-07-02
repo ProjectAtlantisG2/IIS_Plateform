@@ -4,6 +4,7 @@ using System.Net;
 using DAO;
 using System.Configuration;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace CalculationService
 {
@@ -29,7 +30,7 @@ namespace CalculationService
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public async RawDataResponse GetDataForCalculation(RawDataRequest rawDataRequest)
+        public async Task<RawDataResponse> GetDataForCalculation(RawDataRequest rawDataRequest)
         {
             HttpResponseMessage response = await client.PostAsync(javaPlatformBaseUri + "/calculation", new StringContent(JsonConvert.SerializeObject(rawDataRequest), Encoding.UTF8, "application/json"));
 

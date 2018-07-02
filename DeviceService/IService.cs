@@ -14,15 +14,13 @@ namespace DeviceService
     public interface IService
     {
         [OperationContract]
-        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, UriTemplate = "/{deviceId}/telemetry")]
-        HttpResponseMessage PostTelemetry(Telemetry telemetry, string deviceId);
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Wrapped, UriTemplate = "/{deviceId}/telemetry" )]
+        HttpResponseMessage PostTelemetry(string metricDate, string deviceType, string metricValue, string deviceId);
 
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, UriTemplate = "")]
         HttpResponseMessage PostDevice(Device device);
 
-        [OperationContract]
-        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, UriTemplate = "/{deviceId}/command")]
-        HttpResponseMessage PostCommand(string command, string deviceId);
+        void PostCommand();
     }
 }

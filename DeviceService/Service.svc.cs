@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.ServiceModel.Web;
 using System.Text;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace DeviceService
 {
@@ -18,6 +15,7 @@ namespace DeviceService
         private static readonly HttpClient client = new HttpClient();
         private static readonly string javaPlatformBaseUri = ConfigurationManager.AppSettings["JavaPlatformBaseUri"];
         private static readonly string gatewayPlatformBaseUri = ConfigurationManager.AppSettings["GatewayPlatformBaseUri"];
+        private static readonly IModel RabbitChannel = new RabbitClient().Channel; 
         
         public HttpResponseMessage PostDevice(Device device)
         {
@@ -26,17 +24,35 @@ namespace DeviceService
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public HttpResponseMessage PostTelemetry(Telemetry telemetry, string deviceId)
+        public HttpResponseMessage PostTelemetry(string metricDate, string deviceType, string metricValue, string deviceId)
         {
-            if (telemetry == null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
+            if (metricDate == null || deviceType==null || metricValue==null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
+            RabbitChannel.QueueDeclare("Test", false, false, false, null);
+
+            string message = "Hello World!";
+            var body = Encoding.UTF8.GetBytes(message);
+
+            RabbitChannel.BasicPublish(exchange: "", routingKey: "hello", basicProperties: null, body: body);
 
             //// NEED TO SEND DATA TO JMS ////
-            
+
             //client.PostAsync(javaPlatformBaseUri + "/device/" + deviceId + "/telemetry", new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(telemetry), Encoding.UTF8, "application/json"));
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         //// NEED TO RECEIVE COMMAND FROM JMS ////
+        public void PostCommand()
+        {
+            RabbitChannel.QueueDeclare("Commands", false, false, false, null);
+            var consumer = new EventingBasicConsumer(RabbitChannel);
+            consumer.Received += (ch, ea) =>
+            {
+                string data = Encoding.UTF8.GetString(ea.Body);
+
+                RabbitChannel.BasicAck(ea.DeliveryTag, false);
+            };
+        }
+
         public HttpResponseMessage PostCommand(string command, string deviceId)
         {
             if (command == null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);

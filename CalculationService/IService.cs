@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using DAO;
+using System.Threading.Tasks;
 
 namespace CalculationService
 {
@@ -15,7 +15,7 @@ namespace CalculationService
         [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, UriTemplate = "")]
         HttpResponseMessage PostGlobalComplexData(ComplexDataRequest complexDataRequest);
 
-        RawDataResponse GetDataForCalculation(RawDataRequest rawDataRequest);
+        Task<RawDataResponse> GetDataForCalculation(RawDataRequest rawDataRequest);
         // TODO: ajoutez vos opérations de service ici
     }
 }
