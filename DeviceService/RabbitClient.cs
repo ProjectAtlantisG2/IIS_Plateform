@@ -8,14 +8,16 @@ namespace DeviceService
         public IModel Channel { get; set; }
         private IConnection Connection { get; set; }
 
-        public RabbitClient()
+        public RabbitClient(string hostname)
         {
             ConnectionFactory factory = new ConnectionFactory();
-            // "guest"/"guest" by default, limited to localhost connections
-            factory.HostName = ConfigurationManager.AppSettings["HostName"];
+            
+            factory.HostName = hostname;
+            factory.UserName = "luigi";
+            factory.Password = "lama";
 
-            //this.Connection = factory.CreateConnection();
-            //this.Channel = this.Connection.CreateModel();
+            this.Connection = factory.CreateConnection();
+            this.Channel = this.Connection.CreateModel();
         }
     }
 }

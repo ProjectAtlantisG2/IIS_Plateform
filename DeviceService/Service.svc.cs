@@ -3,8 +3,10 @@ using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Web.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Newtonsoft.Json;
 
 namespace DeviceService
 {
@@ -12,31 +14,36 @@ namespace DeviceService
     // REMARQUE : pour lancer le client test WCF afin de tester ce service, sélectionnez Service1.svc ou Service1.svc.cs dans l'Explorateur de solutions et démarrez le débogage.
     public class Service : IService
     {
-        private static readonly HttpClient client = new HttpClient();
-        private static readonly string javaPlatformBaseUri = ConfigurationManager.AppSettings["JavaPlatformBaseUri"];
-        private static readonly string gatewayPlatformBaseUri = ConfigurationManager.AppSettings["GatewayPlatformBaseUri"];
-        private static readonly IModel RabbitChannel = new RabbitClient().Channel; 
+        public AppSettingsSection appSettings;
+        private static HttpClient client = new HttpClient();
+        private static string javaPlatformBaseUri;
+        private static string gatewayPlatformBaseUri;
+        private static IModel RabbitChannel;  
+
+        public Service()
+        {
+            RabbitChannel = new RabbitClient("192.168.192.241").Channel;
+            javaPlatformBaseUri = "http://localhost/Java/";
+            gatewayPlatformBaseUri = "http://localhost/Gateway/";
+        }
         
         public HttpResponseMessage PostDevice(Device device)
         {
             if (device == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
-            client.PostAsync(javaPlatformBaseUri + "/device", new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(device), Encoding.UTF8, "application/json"));
+            client.PostAsync(javaPlatformBaseUri + "/device", new StringContent(JsonConvert.SerializeObject(device), Encoding.UTF8, "application/json"));
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public HttpResponseMessage PostTelemetry(string metricDate, string deviceType, string metricValue, string deviceId)
+        public HttpResponseMessage PostTelemetry(Telemetry telemetry, string deviceId)
         {
-            if (metricDate == null || deviceType==null || metricValue==null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
-            RabbitChannel.QueueDeclare("Test", false, false, false, null);
+            if (telemetry==null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
 
-            string message = "Hello World!";
-            var body = Encoding.UTF8.GetBytes(message);
+            RabbitChannel.QueueDeclare("Metrics", false, false, false, null);
 
-            RabbitChannel.BasicPublish(exchange: "", routingKey: "hello", basicProperties: null, body: body);
+            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new {deviceId, telemetry.metricDate, telemetry.metricValue, telemetry.deviceType }));
 
-            //// NEED TO SEND DATA TO JMS ////
+            RabbitChannel.BasicPublish(exchange: "MetricsExchange", routingKey: "metrics", basicProperties: null, body: body);
 
-            //client.PostAsync(javaPlatformBaseUri + "/device/" + deviceId + "/telemetry", new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(telemetry), Encoding.UTF8, "application/json"));
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
