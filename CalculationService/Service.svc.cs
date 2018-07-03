@@ -4,6 +4,9 @@ using System.Net;
 using DAO;
 using System.Configuration;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.ServiceModel.Web;
+using System;
 
 namespace CalculationService
 {
@@ -17,22 +20,26 @@ namespace CalculationService
         private static readonly string javaPlatformBaseUri = ConfigurationManager.AppSettings["JavaPlatformBaseUri"];
         private static readonly HttpClient client = new HttpClient();
 
-        public HttpResponseMessage PostGlobalComplexData(ComplexDataRequest complexDataRequest)
+        public void PostGlobalComplexData(ComplexDataRequest complexDataRequest)
         {
-            if (complexDataRequest == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
-            var collection = complexDataRequest.ToCollectionName();
-            if (collection == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
-            MongoConnection mongoConnection = new MongoConnection(mongoConnectionString, mongoDatabaseName, complexDataRequest.ToCollectionName());
+            try
+            {
+                if (complexDataRequest == null) throw new WebFaultException<string>("", HttpStatusCode.MethodNotAllowed);
+                var collection = complexDataRequest.ToCollectionName();
+                if (collection == null) throw new WebFaultException<string>("", HttpStatusCode.MethodNotAllowed);
+                MongoConnection mongoConnection = new MongoConnection(mongoConnectionString, mongoDatabaseName);
+                Enum.TryParse(complexDataRequest.Delay, out Delay delay);
+                var response = mongoConnection.GetData(complexDataRequest.ToCollectionName(), DateTime.Parse(complexDataRequest.From), DateTime.Parse(complexDataRequest.To), delay);
+                    throw new WebFaultException<string>(response, HttpStatusCode.OK);
 
-            //Get DATA
-
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            catch { }
         }
 
-        public async RawDataResponse GetDataForCalculation(RawDataRequest rawDataRequest)
+        public async Task<RawDataResponse> GetDataForCalculation(RawDataRequest rawDataRequest)
         {
             HttpResponseMessage response = await client.PostAsync(javaPlatformBaseUri + "/calculation", new StringContent(JsonConvert.SerializeObject(rawDataRequest), Encoding.UTF8, "application/json"));
-
+            
             //// MODIF CA 
             return null;
         }

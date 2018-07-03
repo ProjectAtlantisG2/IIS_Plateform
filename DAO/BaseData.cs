@@ -9,46 +9,47 @@ namespace DAO
     public class BaseData
     {
         [DataMember]
-        protected Delay Delay { get; set; }
+        public string Delay { get; set; }
 
         [DataMember]
-        protected DeviceType DeviceType { get; set; }
+        protected string DeviceType { get; set; }
 
-        public BaseData(Delay delay, DeviceType deviceType)
+        public BaseData(Delay delay, DeviceTypes deviceType)
         {
-            this.Delay = delay;
-            this.DeviceType = deviceType;
+            this.Delay = delay.ToString();
+            this.DeviceType = deviceType.ToString();
         }
 
         public string ToCollectionName(CalculType calculType)
         {
-            var DataType = DeviceTypeToDataType(this.DeviceType);
+            Enum.TryParse(this.DeviceType, out DeviceTypes type);
+            var DataType = DeviceTypeToDataType(type);
             if (DataType != null)
                 return DataType + calculType + this.Delay;
             return null;
         }
 
-        protected string DeviceTypeToDataType(DeviceType deviceType)
+        protected string DeviceTypeToDataType(DeviceTypes deviceType)
         {
             switch (deviceType)
             {
-                case DeviceType.atmosphericPressureSensor:
+                case DeviceTypes.atmosphericPressureSensor:
                     {
                         return "Pres";
                     }
-                case DeviceType.brightnessSensor:
+                case DeviceTypes.brightnessSensor:
                     {
                         return "Brig";
                     }
-                case DeviceType.co2Sensor:
+                case DeviceTypes.co2Sensor:
                     {
                         return "Co20";
                     }
-                case DeviceType.humiditySensor:
+                case DeviceTypes.humiditySensor:
                     {
                         return "Humi";
                     }
-                case DeviceType.temperatureSensor:
+                case DeviceTypes.temperatureSensor:
                     {
                         return "Temp";
                     }
