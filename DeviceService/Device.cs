@@ -10,14 +10,15 @@ namespace DeviceService
         [DataMember]
         private string name { get; set; }
         [DataMember]
-        private DeviceType deviceType { get; set; }
+        private string deviceType { get; set; }
 
-        public Device(string id = null, string name = null, DeviceType? deviceType = null)
+        public Device(string id = null, string name = null, string deviceType = null)
         {
-            if (deviceType != null) this.deviceType = (DeviceType)deviceType;
+            if (deviceType != null) this.deviceType = deviceType;
             this.id = id;
             this.name = name;
         }
+
 
     }
 }
