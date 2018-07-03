@@ -21,6 +21,10 @@ namespace Host
             {
                 Console.WriteLine("\t- Binding : {0}  |  Address : {1}", endpoint.Binding, endpoint.Address);
             }
+            foreach (var endpoint in calculationHost.Description.Endpoints)
+            {
+                Console.WriteLine("\t- Binding : {0}  |  Address : {1}", endpoint.Binding, endpoint.Address);
+            }
 
             deviceHost.Open();
             calculationHost.Open();

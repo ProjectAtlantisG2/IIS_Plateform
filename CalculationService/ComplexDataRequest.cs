@@ -8,11 +8,11 @@ namespace CalculationService
     public class ComplexDataRequest : ComplexData
     {
         [DataMember]
-        private DateTime From { get; set; }
+        public string From { get; set; }
         [DataMember]
-        private DateTime To { get; set; }
+        public string To { get; set; }
 
-        public ComplexDataRequest(Delay delay, CalculType calculType, DeviceType deviceType, DateTime from, DateTime to)
+        public ComplexDataRequest(Delay delay, CalculType calculType, DeviceTypes deviceType, string from, string to)
             : base(delay, calculType, deviceType)
         {
             this.From = from;
@@ -21,7 +21,8 @@ namespace CalculationService
 
         public string ToCollectionName()
         {
-            var DataType = base.DeviceTypeToDataType(this.DeviceType);
+            Enum.TryParse(this.DeviceType, out DeviceTypes type);
+            var DataType = base.DeviceTypeToDataType(type);
             if (DataType != null)
                 return DataType + this.CalculType + this.Delay;
             return null;

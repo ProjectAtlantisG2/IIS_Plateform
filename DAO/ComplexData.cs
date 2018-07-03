@@ -6,12 +6,12 @@ namespace DAO
     public class ComplexData : BaseData
     {
         [DataMember]
-        protected CalculType CalculType { get; set; }
+        protected string CalculType { get; set; }
 
-        public ComplexData(Delay delay, CalculType calculType, DeviceType deviceType)
+        public ComplexData(Delay delay, CalculType calculType, DeviceTypes deviceType)
             :base(delay,deviceType)
         {
-            this.CalculType = calculType;
+            this.CalculType = calculType.ToString();
         }
     }
 

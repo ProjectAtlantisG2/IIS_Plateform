@@ -13,8 +13,8 @@ namespace CalculationService
 
 
         [OperationContract]
-        [WebInvoke(BodyStyle = WebMessageBodyStyle.WrappedRequest, UriTemplate = "")]
-        HttpResponseMessage PostGlobalComplexData(ComplexDataRequest complexDataRequest);
+        [WebInvoke(UriTemplate = "")]
+        void PostGlobalComplexData(ComplexDataRequest complexDataRequest);
 
         Task<RawDataResponse> GetDataForCalculation(RawDataRequest rawDataRequest);
         // TODO: ajoutez vos opérations de service ici

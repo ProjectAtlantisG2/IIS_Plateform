@@ -7,11 +7,11 @@ namespace CalculationService
     public class RawDataRequest : BaseData
     {
         [DataMember]
-        public int From { get; set; }
+        public string From { get; set; }
         [DataMember]
-        private int To { get; set; }
+        private string To { get; set; }
 
-        public RawDataRequest(Delay delay, DeviceType deviceType, int from, int to)
+        public RawDataRequest(Delay delay, DeviceTypes deviceType, string from, string to)
             : base(delay, deviceType)
         {
             this.From = from;
