@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAO
 {
-    public enum DeviceType
+    public enum DeviceTypes
     {
         presenceSensor,
         temperatureSensor,
