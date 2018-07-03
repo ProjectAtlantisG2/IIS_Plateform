@@ -9,6 +9,7 @@ namespace DeviceService
 
         public RabbitClient(string hostname)
         {
+            if (hostname == null) return;
             ConnectionFactory factory = new ConnectionFactory();
 
             factory.HostName = hostname;

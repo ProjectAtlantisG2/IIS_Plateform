@@ -14,8 +14,8 @@ namespace CalculationService
         public RawDataRequest(Delay delay, DeviceTypes deviceType, string from, string to)
             : base(delay, deviceType)
         {
-            this.From = from;
-            this.To = to;
+            if (from != null) this.From = from;
+            if (to != null) this.To = to;
         }
     }
 }

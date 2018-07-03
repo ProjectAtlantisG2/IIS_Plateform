@@ -15,7 +15,7 @@ namespace CalculationService
         public RawDataResponse(Delay delay, DeviceTypes deviceType, string from, string to, List<float> rawData) 
             : base(delay, deviceType, from, to)
         {
-            this.RawData = rawData;
+            if(rawData != null) this.RawData = rawData;
         }
 
     }

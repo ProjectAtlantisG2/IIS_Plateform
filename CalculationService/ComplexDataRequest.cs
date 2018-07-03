@@ -15,8 +15,8 @@ namespace CalculationService
         public ComplexDataRequest(Delay delay, CalculType calculType, DeviceTypes deviceType, string from, string to)
             : base(delay, calculType, deviceType)
         {
-            this.From = from;
-            this.To = to;
+            if (from != null) this.From = from;
+            if (from != null) this.To = to;
         }
 
         public string ToCollectionName()
