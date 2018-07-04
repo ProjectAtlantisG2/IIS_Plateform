@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -21,8 +22,8 @@ namespace DeviceService
         public Service()
         {
             RabbitChannel = new RabbitClient("192.168.192.241").Channel;
-            javaPlatformBaseUri = "http://localhost/Java/";
-            gatewayPlatformBaseUri = "http://localhost/Gateway/";
+            javaPlatformBaseUri = "http://192.168.192.249:8080/api-0.0.1-SNAPSHOT";
+            gatewayPlatformBaseUri = "http://192.168.192.106:80/gateway/";
         }
 
         public HttpResponseMessage PostDevice(Device device)
@@ -37,15 +38,15 @@ namespace DeviceService
             if (telemetry == null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
 
             RabbitChannel.QueueDeclare("Metrics", false, false, false, null);
+            var response = JsonConvert.SerializeObject(new { deviceId, telemetry.metricDate, telemetry.metricValue, telemetry.deviceType });
 
-            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { deviceId, telemetry.metricDate, telemetry.metricValue, telemetry.deviceType }));
+            var body = Encoding.UTF8.GetBytes(response);
 
-            RabbitChannel.BasicPublish(exchange: "MetricsExchange", routingKey: "metrics", basicProperties: null, body: body);
-
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            RabbitChannel.BasicPublish(exchange: "MetricsExchange", routingKey: "metrics", mandatory: true, basicProperties: null, body: body);
+            
+            return ProcessResponse(response);
         }
-
-        //// NEED TO RECEIVE COMMAND FROM JMS ////
+        
         public void PostCommand()
         {
             RabbitChannel.QueueDeclare("Commands", false, false, false, null);
@@ -57,5 +58,22 @@ namespace DeviceService
                 RabbitChannel.BasicAck(ea.DeliveryTag, false);
             };
         }
+
+        public HttpResponseMessage ProcessResponse(string response)
+        {
+            if (response == null) return null;
+            Utils.createCustomMessage(client, javaPlatformBaseUri, response);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
+        public HttpResponseMessage PostCommand(string command, string deviceId)
+        {
+            if (command == null || deviceId == null) return new HttpResponseMessage(HttpStatusCode.MethodNotAllowed);
+            var text = new StringContent(JsonConvert.SerializeObject(new { command = command }), Encoding.UTF8, "application/json");
+            Console.WriteLine("New Command is coming throught Microsoft");
+            client.PostAsync(gatewayPlatformBaseUri + deviceId + "/command", text);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
     }
 }

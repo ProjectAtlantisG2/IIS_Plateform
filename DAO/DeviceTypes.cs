@@ -8,15 +8,15 @@ namespace DAO
 {
     public enum DeviceTypes
     {
-        presenceSensor,
         temperatureSensor,
         brightnessSensor,
         atmosphericPressureSensor,
         humiditySensor,
         soundLevelSensor,
-        gpsSensor,
         co2Sensor,
+        gpsSensor,
         ledDevice,
-        beeperDevice
+        beeperDevice,
+        presenceSensor
     }
 }

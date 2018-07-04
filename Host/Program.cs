@@ -28,6 +28,8 @@ namespace Host
 
             deviceHost.Open();
             calculationHost.Open();
+
+            RabbitConsumer rabbitConsumer = new RabbitConsumer();
             Console.WriteLine("Microsoft Services are listening.....\n");
             Console.WriteLine("\nPress enter to quit.....");
             Console.ReadLine();

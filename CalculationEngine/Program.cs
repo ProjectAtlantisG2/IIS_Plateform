@@ -4,6 +4,7 @@ using CalculationService;
 using System.Linq;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace CalculationEngine
 {
@@ -12,6 +13,8 @@ namespace CalculationEngine
         private static readonly string mongoConnectionString = ConfigurationManager.AppSettings["MongoConnectionString"];
         private static readonly string mongoDatabaseName = ConfigurationManager.AppSettings["MongoDatabaseName"];
         private static Service comm = new Service();
+        private static CultureInfo provider = CultureInfo.InvariantCulture;
+
         public static void Main(string[] args)
         {
             Stopwatch hourlyTimer = new Stopwatch();
@@ -19,10 +22,7 @@ namespace CalculationEngine
 
             //TEST
             MongoConnection mongoConnection = new MongoConnection(mongoConnectionString, mongoDatabaseName);
-            for (var i = 0; i <= 5; i++)
-            {
-                mongoConnection.InsertData("TempMaxHour", 23.50F-i, DateTime.Now.AddHours(-i), Delay.Hour);
-            }
+            ComplexCalculation(Delay.Hour);
 
             //IN APP TIMER
             //while (true)
@@ -59,15 +59,15 @@ namespace CalculationEngine
             MongoConnection mongoConnection = new MongoConnection(mongoConnectionString, mongoDatabaseName);
             foreach (DeviceTypes type in Enum.GetValues(typeof(CalculatedDeviceType)))
             {
-                RawDataResponse response = comm.GetDataForCalculation(new RawDataRequest(delay, type, DateTime.Now.AddHours(-1).ToString(), DateTime.Now.ToString())).Result;
+                RawDataResponse response = comm.GetDataForCalculation(new RawDataRequest(delay, type, DateTime.Now.AddHours(-1).ToString("dd/MM/yyyy HH:mm:ss:fff"), DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss:fff"))).Result;
 
                 var max = response.RawData.Max();
                 var min = response.RawData.Min();
                 var moy = response.RawData.Sum() / response.RawData.Count;
 
-                mongoConnection.InsertData(response.ToCollectionName(CalculType.Max), max, DateTime.Parse(response.From), delay);
-                mongoConnection.InsertData(response.ToCollectionName(CalculType.Min), min, DateTime.Parse(response.From), delay);
-                mongoConnection.InsertData(response.ToCollectionName(CalculType.Moy), moy, DateTime.Parse(response.From), delay);
+                mongoConnection.InsertData(response.ToCollectionName(CalculType.Max), max, DateTime.ParseExact(response.From, "dd/MM/yyyy HH:mm:ss:fff", provider), delay);
+                mongoConnection.InsertData(response.ToCollectionName(CalculType.Min), min, DateTime.ParseExact(response.From, "dd/MM/yyyy HH:mm:ss:fff", provider), delay);
+                mongoConnection.InsertData(response.ToCollectionName(CalculType.Moy), moy, DateTime.ParseExact(response.From, "dd/MM/yyyy HH:mm:ss:fff", provider), delay);
             };
         } 
     }

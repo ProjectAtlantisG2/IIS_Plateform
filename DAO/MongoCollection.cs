@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MongoDB.Bson;
 
 namespace DAO
 {
@@ -11,6 +12,15 @@ namespace DAO
             this.Date = date;
             this.Value = value;
         }
+
+        public MongoCollection(ObjectId id, DateTime date, float value)
+        {
+            this._id = id;
+            this.Date = date;
+            this.Value = value;
+        }
+
+        public ObjectId _id { get; set; }
 
         public DateTime Date { get; set; }
         public float Value { get; set; }

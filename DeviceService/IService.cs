@@ -21,6 +21,10 @@ namespace DeviceService
         [WebInvoke(UriTemplate = "")]
         HttpResponseMessage PostDevice(Device device);
 
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/{deviceId}/commands", BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        HttpResponseMessage PostCommand(string command, string deviceId);
+
         void PostCommand();
     }
 }

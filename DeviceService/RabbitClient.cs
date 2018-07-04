@@ -13,8 +13,8 @@ namespace DeviceService
             ConnectionFactory factory = new ConnectionFactory();
 
             factory.HostName = hostname;
-            factory.UserName = "luigi";
-            factory.Password = "lama";
+            factory.UserName = "payara";
+            factory.Password = "payara";
 
             this.Connection = factory.CreateConnection();
             this.Channel = this.Connection.CreateModel();

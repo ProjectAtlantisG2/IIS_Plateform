@@ -14,7 +14,7 @@ namespace CalculationService
 
         [OperationContract]
         [WebInvoke(UriTemplate = "")]
-        void PostGlobalComplexData(ComplexDataRequest complexDataRequest);
+        string PostGlobalComplexData(ComplexDataRequest complexDataRequest);
 
         Task<RawDataResponse> GetDataForCalculation(RawDataRequest rawDataRequest);
         // TODO: ajoutez vos opérations de service ici

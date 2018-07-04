@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.ServiceModel.Web;
 using System;
+using System.Globalization;
 
 namespace CalculationService
 {
@@ -14,14 +15,16 @@ namespace CalculationService
     // REMARQUE : pour lancer le client test WCF afin de tester ce service, sélectionnez Service1.svc ou Service1.svc.cs dans l'Explorateur de solutions et démarrez le débogage.
     public class Service : IService
     {
-        private static readonly string mongoConnectionString = ConfigurationManager.AppSettings["MongoConnectionString"];
-        private static readonly string mongoDatabaseName = ConfigurationManager.AppSettings["MongoDatabaseName"];
+        private static readonly string mongoConnectionString = "mongodb://localhost:27017";
+        private static readonly string mongoDatabaseName = "ComplexData";
         private static readonly string mongoCollectionName = ConfigurationManager.AppSettings["MongoCollectionName"];
-        private static readonly string javaPlatformBaseUri = ConfigurationManager.AppSettings["JavaPlatformBaseUri"];
+        private static readonly string javaPlatformBaseUri = "http://192.168.192.249:8080/api-0.0.1-SNAPSHOT";
         private static readonly HttpClient client = new HttpClient();
+        private static CultureInfo provider = CultureInfo.InvariantCulture;
 
-        public void PostGlobalComplexData(ComplexDataRequest complexDataRequest)
+        public string PostGlobalComplexData(ComplexDataRequest complexDataRequest)
         {
+            string response = "";
             try
             {
                 if (complexDataRequest == null) throw new WebFaultException<string>("", HttpStatusCode.MethodNotAllowed);
@@ -29,19 +32,24 @@ namespace CalculationService
                 if (collection == null) throw new WebFaultException<string>("", HttpStatusCode.MethodNotAllowed);
                 MongoConnection mongoConnection = new MongoConnection(mongoConnectionString, mongoDatabaseName);
                 Enum.TryParse(complexDataRequest.Delay, out Delay delay);
-                var response = mongoConnection.GetData(complexDataRequest.ToCollectionName(), DateTime.Parse(complexDataRequest.From), DateTime.Parse(complexDataRequest.To), delay);
-                    throw new WebFaultException<string>(response, HttpStatusCode.OK);
+                response = mongoConnection.GetData(complexDataRequest.ToCollectionName(), DateTime.ParseExact(complexDataRequest.From, "dd/MM/yyyy HH:mm:ss:fff", provider), DateTime.ParseExact(complexDataRequest.To, "dd/MM/yyyy HH:mm:ss:fff", provider), delay);
+                //throw new WebFaultException<string>(response, HttpStatusCode.OK);
 
             }
-            catch { }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+            return response;
         }
 
         public async Task<RawDataResponse> GetDataForCalculation(RawDataRequest rawDataRequest)
         {
             HttpResponseMessage response = await client.PostAsync(javaPlatformBaseUri + "/calculation", new StringContent(JsonConvert.SerializeObject(rawDataRequest), Encoding.UTF8, "application/json"));
-            
+            var contents = await response.Content.ReadAsStringAsync();
+            var rawData = JsonConvert.DeserializeObject<RawDataResponse>(contents);
             //// MODIF CA 
-            return null;
+            return rawData;
         }
     }
 }
